@@ -28,7 +28,7 @@ func New(dsn string) (*Connection, error) {
 	}, nil
 }
 
-// Connection represents the sqlx inplementation of the DB interface
+// Connection represents the sqlx implementation of the sqldb.Connection interface
 type Connection struct {
 	*Queryable
 	con *sqlx.DB
