@@ -8,7 +8,8 @@ import (
 
 // MockTx is a mock of Tx interface
 type MockTx struct {
-	MockQueryable
+	queryable *MockQueryable
+
 	ctrl     *gomock.Controller
 	recorder *MockTxMockRecorder
 }
@@ -16,13 +17,29 @@ type MockTx struct {
 // MockTxMockRecorder is the mock recorder for MockTx
 type MockTxMockRecorder struct {
 	mock *MockTx
+
+	MockQueryableMockRecorder
 }
 
 // NewMockTx creates a new mock instance
 func NewMockTx(ctrl *gomock.Controller) *MockTx {
-	mock := &MockTx{ctrl: ctrl}
-	mock.recorder = &MockTxMockRecorder{mock}
+	mock := &MockTx{
+		ctrl:      ctrl,
+		queryable: NewMockQueryable(ctrl),
+	}
+	mock.recorder = &MockTxMockRecorder{mock: mock}
 	return mock
+}
+
+// QEXPECT returns an object that allows the caller to indicate expected use
+// for a Queryable
+func (m *MockTx) QEXPECT() *MockQueryableMockRecorder {
+	return m.queryable.recorder
+}
+
+// Q returns a queryable mock
+func (m *MockTx) Q() *MockQueryable {
+	return m.queryable
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use

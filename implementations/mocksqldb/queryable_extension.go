@@ -3,21 +3,22 @@ package mocksqldb
 import (
 	"database/sql"
 
+	matcher "github.com/Nivl/gomock-type-matcher"
 	gomock "github.com/golang/mock/gomock"
 )
 
 var (
 	// StringType represents a string argument
-	StringType = gomock.Eq("string")
+	StringType = matcher.String()
 	// IntType represents an int argument
-	IntType = gomock.Eq("int")
+	IntType = matcher.Int()
 	// AnyType represents an argument that can be anything
 	AnyType = gomock.Any()
 )
 
 // GetSuccess is a helper that expects a Get to succeed
-func (mr *MockQueryableMockRecorder) GetSuccess(typ string, runnable func()) *gomock.Call {
-	getCall := mr.Get(gomock.Eq(typ), StringType, StringType)
+func (mr *MockQueryableMockRecorder) GetSuccess(typ interface{}, runnable interface{}) *gomock.Call {
+	getCall := mr.Get(matcher.Interface(typ), StringType, StringType)
 	getCall.Return(nil)
 	if runnable != nil {
 		getCall.Do(runnable)
@@ -26,8 +27,8 @@ func (mr *MockQueryableMockRecorder) GetSuccess(typ string, runnable func()) *go
 }
 
 // GetID is a helper that expects a Get with a specific ID
-func (mr *MockQueryableMockRecorder) GetID(typ string, uuid string, runnable func()) *gomock.Call {
-	getCall := mr.Get(gomock.Eq(typ), StringType, uuid)
+func (mr *MockQueryableMockRecorder) GetID(typ interface{}, uuid string, runnable interface{}) *gomock.Call {
+	getCall := mr.Get(matcher.Interface(typ), StringType, uuid)
 	getCall.Return(nil)
 	if runnable != nil {
 		getCall.Do(runnable)
@@ -36,29 +37,29 @@ func (mr *MockQueryableMockRecorder) GetID(typ string, uuid string, runnable fun
 }
 
 // GetNotFound is a helper that expects a not found on a Get
-func (mr *MockQueryableMockRecorder) GetNotFound(typ string) *gomock.Call {
-	getCall := mr.Get(gomock.Eq(typ), StringType, StringType)
+func (mr *MockQueryableMockRecorder) GetNotFound(typ interface{}) *gomock.Call {
+	getCall := mr.Get(matcher.Interface(typ), StringType, StringType)
 	getCall.Return(sql.ErrNoRows)
 	return getCall.Times(1)
 }
 
 // GetIDNotFound is a helper that expects a not found on a Get with a specific ID
-func (mr *MockQueryableMockRecorder) GetIDNotFound(typ string, uuid string) *gomock.Call {
-	getCall := mr.Get(gomock.Eq(typ), StringType, uuid)
+func (mr *MockQueryableMockRecorder) GetIDNotFound(typ interface{}, uuid string) *gomock.Call {
+	getCall := mr.Get(matcher.Interface(typ), StringType, uuid)
 	getCall.Return(sql.ErrNoRows)
 	return getCall.Times(1)
 }
 
 // GetIDError is a helper that expects a connection error on a Get with a specific ID
-func (mr *MockQueryableMockRecorder) GetIDError(typ string, uuid string, err error) *gomock.Call {
-	getCall := mr.Get(gomock.Eq(typ), StringType, uuid)
+func (mr *MockQueryableMockRecorder) GetIDError(typ interface{}, uuid string, err error) *gomock.Call {
+	getCall := mr.Get(matcher.Interface(typ), StringType, uuid)
 	getCall.Return(err)
 	return getCall.Times(1)
 }
 
 // GetNoParams is a helper that expects a Get with no params but the stmt
-func (mr *MockQueryableMockRecorder) GetNoParams(typ string, runnable func()) *gomock.Call {
-	call := mr.Get(gomock.Eq(typ), StringType)
+func (mr *MockQueryableMockRecorder) GetNoParams(typ interface{}, runnable interface{}) *gomock.Call {
+	call := mr.Get(matcher.Interface(typ), StringType)
 	call.Return(nil)
 	if runnable != nil {
 		call.Do(runnable)
@@ -67,29 +68,29 @@ func (mr *MockQueryableMockRecorder) GetNoParams(typ string, runnable func()) *g
 }
 
 // GetNoParamsNotFound is a helper that expects a not found on a Get with no params but the stmt
-func (mr *MockQueryableMockRecorder) GetNoParamsNotFound(typ string) *gomock.Call {
-	call := mr.Get(gomock.Eq(typ), StringType)
+func (mr *MockQueryableMockRecorder) GetNoParamsNotFound(typ interface{}) *gomock.Call {
+	call := mr.Get(matcher.Interface(typ), StringType)
 	call.Return(sql.ErrNoRows)
 	return call.Times(1)
 }
 
 // GetNoParamsError is a helper that expects a connection error on a Get with no params but the stmt
-func (mr *MockQueryableMockRecorder) GetNoParamsError(typ string, err error) *gomock.Call {
-	call := mr.Get(gomock.Eq(typ), StringType)
+func (mr *MockQueryableMockRecorder) GetNoParamsError(typ interface{}, err error) *gomock.Call {
+	call := mr.Get(matcher.Interface(typ), StringType)
 	call.Return(err)
 	return call.Times(1)
 }
 
 // GetError is a helper that expects a connection error on a Get
-func (mr *MockQueryableMockRecorder) GetError(typ string, err error) *gomock.Call {
-	getCall := mr.Get(gomock.Eq(typ), StringType, StringType)
+func (mr *MockQueryableMockRecorder) GetError(typ interface{}, err error) *gomock.Call {
+	getCall := mr.Get(matcher.Interface(typ), StringType, StringType)
 	getCall.Return(err)
 	return getCall.Times(1)
 }
 
 // SelectSuccess is an helper that expects a Select
-func (mr *MockQueryableMockRecorder) SelectSuccess(typ string, runnable func()) *gomock.Call {
-	selectCall := mr.Select(gomock.Eq(typ), StringType, IntType, IntType)
+func (mr *MockQueryableMockRecorder) SelectSuccess(typ interface{}, runnable interface{}) *gomock.Call {
+	selectCall := mr.Select(matcher.Interface(typ), StringType, IntType, IntType)
 	selectCall.Return(nil)
 	if runnable != nil {
 		selectCall.Do(runnable)
@@ -98,8 +99,8 @@ func (mr *MockQueryableMockRecorder) SelectSuccess(typ string, runnable func()) 
 }
 
 // SelectError is an helper that expects an error on a Select
-func (mr *MockQueryableMockRecorder) SelectError(typ string, err error) *gomock.Call {
-	selectCall := mr.Select(gomock.Eq(typ), StringType, IntType, IntType)
+func (mr *MockQueryableMockRecorder) SelectError(typ interface{}, err error) *gomock.Call {
+	selectCall := mr.Select(matcher.Interface(typ), StringType, IntType, IntType)
 	selectCall.Return(err)
 	return selectCall.Times(1)
 }
@@ -115,21 +116,21 @@ func (mr *MockQueryableMockRecorder) DeletionError(err error) *gomock.Call {
 }
 
 // InsertSuccess is a helper that expects an insertion
-func (mr *MockQueryableMockRecorder) InsertSuccess(typ string) *gomock.Call {
-	return mr.NamedExec(StringType, gomock.Eq(typ)).Return(int64(1), nil).Times(1)
+func (mr *MockQueryableMockRecorder) InsertSuccess(typ interface{}) *gomock.Call {
+	return mr.NamedExec(StringType, matcher.Interface(typ)).Return(int64(1), nil).Times(1)
 }
 
 // InsertError is a helper that expects an insert to fail
-func (mr *MockQueryableMockRecorder) InsertError(typ string, err error) *gomock.Call {
-	return mr.NamedExec(StringType, gomock.Eq(typ)).Return(int64(1), err).Times(1)
+func (mr *MockQueryableMockRecorder) InsertError(typ interface{}, err error) *gomock.Call {
+	return mr.NamedExec(StringType, matcher.Interface(typ)).Return(int64(1), err).Times(1)
 }
 
 // UpdateSuccess is a helper that expects an update
-func (mr *MockQueryableMockRecorder) UpdateSuccess(typ string) *gomock.Call {
-	return mr.NamedExec(StringType, gomock.Eq(typ)).Return(int64(1), nil).Times(1)
+func (mr *MockQueryableMockRecorder) UpdateSuccess(typ interface{}) *gomock.Call {
+	return mr.NamedExec(StringType, matcher.Interface(typ)).Return(int64(1), nil).Times(1)
 }
 
 // UpdateError is a helper that expects an update to fail
-func (mr *MockQueryableMockRecorder) UpdateError(typ string, err error) *gomock.Call {
-	return mr.NamedExec(StringType, gomock.Eq(typ)).Return(int64(0), err).Times(1)
+func (mr *MockQueryableMockRecorder) UpdateError(typ interface{}, err error) *gomock.Call {
+	return mr.NamedExec(StringType, matcher.Interface(typ)).Return(int64(0), err).Times(1)
 }

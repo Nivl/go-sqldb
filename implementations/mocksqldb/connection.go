@@ -10,7 +10,8 @@ import (
 
 // MockConnection is a mock of Connection interface
 type MockConnection struct {
-	MockQueryable
+	queryable *MockQueryable
+
 	ctrl     *gomock.Controller
 	recorder *MockConnectionMockRecorder
 }
@@ -22,9 +23,25 @@ type MockConnectionMockRecorder struct {
 
 // NewMockConnection creates a new mock instance
 func NewMockConnection(ctrl *gomock.Controller) *MockConnection {
-	mock := &MockConnection{ctrl: ctrl}
-	mock.recorder = &MockConnectionMockRecorder{mock}
+	mock := &MockConnection{
+		ctrl:      ctrl,
+		queryable: NewMockQueryable(ctrl),
+	}
+	mock.recorder = &MockConnectionMockRecorder{
+		mock: mock,
+	}
 	return mock
+}
+
+// QEXPECT returns an object that allows the caller to indicate expected use
+// for a Queryable
+func (m *MockConnection) QEXPECT() *MockQueryableMockRecorder {
+	return m.queryable.recorder
+}
+
+// Q returns a queryable mock
+func (m *MockConnection) Q() *MockQueryable {
+	return m.queryable
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use
