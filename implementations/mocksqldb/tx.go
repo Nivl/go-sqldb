@@ -3,8 +3,11 @@ package mocksqldb
 import (
 	reflect "reflect"
 
+	sqldb "github.com/Nivl/go-sqldb"
 	gomock "github.com/golang/mock/gomock"
 )
+
+var _ sqldb.Tx = (*MockTx)(nil)
 
 // MockTx is a mock of Tx interface
 type MockTx struct {
@@ -37,11 +40,6 @@ func (m *MockTx) QEXPECT() *MockQueryableMockRecorder {
 	return m.queryable.recorder
 }
 
-// Q returns a queryable mock
-func (m *MockTx) Q() *MockQueryable {
-	return m.queryable
-}
-
 // EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockTx) EXPECT() *MockTxMockRecorder {
 	return m.recorder
@@ -69,4 +67,34 @@ func (m *MockTx) Rollback() error {
 // Rollback indicates an expected call of Rollback
 func (mr *MockTxMockRecorder) Rollback() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Rollback", reflect.TypeOf((*MockTx)(nil).Rollback))
+}
+
+// Exec mocks base method
+func (m *MockTx) Exec(arg0 string, arg1 ...interface{}) (int64, error) {
+	return m.queryable.Exec(arg0, arg1...)
+}
+
+// Get mocks base method
+func (m *MockTx) Get(arg0 interface{}, arg1 string, arg2 ...interface{}) error {
+	return m.queryable.Get(arg0, arg1, arg2...)
+}
+
+// NamedExec mocks base method
+func (m *MockTx) NamedExec(arg0 string, arg1 interface{}) (int64, error) {
+	return m.queryable.NamedExec(arg0, arg1)
+}
+
+// NamedGet indicates an expected call of NamedGet
+func (m *MockTx) NamedGet(arg0 interface{}, arg1 string, arg2 interface{}) error {
+	return m.queryable.NamedGet(arg0, arg1, arg2)
+}
+
+// NamedSelect mocks base method
+func (m *MockTx) NamedSelect(arg0 interface{}, arg1 string, arg2 interface{}) error {
+	return m.queryable.NamedSelect(arg0, arg1, arg2)
+}
+
+// Select mocks base method
+func (m *MockTx) Select(arg0 interface{}, arg1 string, arg2 ...interface{}) error {
+	return m.queryable.Select(arg0, arg1, arg2...)
 }

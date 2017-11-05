@@ -4,9 +4,13 @@ import (
 	sql "database/sql"
 	reflect "reflect"
 
+	"github.com/Nivl/go-sqldb"
+
 	go_sqldb "github.com/Nivl/go-sqldb"
 	gomock "github.com/golang/mock/gomock"
 )
+
+var _ sqldb.Connection = (*MockConnection)(nil)
 
 // MockConnection is a mock of Connection interface
 type MockConnection struct {
@@ -37,11 +41,6 @@ func NewMockConnection(ctrl *gomock.Controller) *MockConnection {
 // for a Queryable
 func (m *MockConnection) QEXPECT() *MockQueryableMockRecorder {
 	return m.queryable.recorder
-}
-
-// Q returns a queryable mock
-func (m *MockConnection) Q() *MockQueryable {
-	return m.queryable
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use
@@ -96,4 +95,34 @@ func (m *MockConnection) SQL() *sql.DB {
 // SQL indicates an expected call of SQL
 func (mr *MockConnectionMockRecorder) SQL() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SQL", reflect.TypeOf((*MockConnection)(nil).SQL))
+}
+
+// Exec mocks base method
+func (m *MockConnection) Exec(arg0 string, arg1 ...interface{}) (int64, error) {
+	return m.queryable.Exec(arg0, arg1...)
+}
+
+// Get mocks base method
+func (m *MockConnection) Get(arg0 interface{}, arg1 string, arg2 ...interface{}) error {
+	return m.queryable.Get(arg0, arg1, arg2...)
+}
+
+// NamedExec mocks base method
+func (m *MockConnection) NamedExec(arg0 string, arg1 interface{}) (int64, error) {
+	return m.queryable.NamedExec(arg0, arg1)
+}
+
+// NamedGet mocks base method
+func (m *MockConnection) NamedGet(arg0 interface{}, arg1 string, arg2 interface{}) error {
+	return m.queryable.NamedGet(arg0, arg1, arg2)
+}
+
+// NamedSelect mocks base method
+func (m *MockConnection) NamedSelect(arg0 interface{}, arg1 string, arg2 interface{}) error {
+	return m.queryable.NamedSelect(arg0, arg1, arg2)
+}
+
+// Select mocks base method
+func (m *MockConnection) Select(arg0 interface{}, arg1 string, arg2 ...interface{}) error {
+	return m.queryable.Select(arg0, arg1, arg2...)
 }

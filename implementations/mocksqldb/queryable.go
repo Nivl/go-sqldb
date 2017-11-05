@@ -3,8 +3,11 @@ package mocksqldb
 import (
 	reflect "reflect"
 
+	sqldb "github.com/Nivl/go-sqldb"
 	gomock "github.com/golang/mock/gomock"
 )
+
+var _ sqldb.Queryable = (*MockQueryable)(nil)
 
 // MockQueryable is a mock of Queryable interface
 type MockQueryable struct {

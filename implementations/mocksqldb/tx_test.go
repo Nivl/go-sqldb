@@ -16,6 +16,6 @@ func TestQueryableWithTx(t *testing.T) {
 	m.QEXPECT().GetNotFound(&testStruct{})
 
 	output := &testStruct{}
-	err := m.Q().Get(output, "select * ...", "uuid")
+	err := m.Get(output, "select * ...", "uuid")
 	assert.Error(t, err, "m.Get() should have failed")
 }
