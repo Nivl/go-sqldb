@@ -15,5 +15,5 @@ func (mr *MockConnectionMockRecorder) TransactionSuccess(ctrl *gomock.Controller
 
 // TransactionError is a helper that expects a transaction to fail
 func (mr *MockConnectionMockRecorder) TransactionError() *gomock.Call {
-	return mr.Beginx().Return(nil, errors.New("cound not create transaction"))
+	return mr.Beginx().Return(nil, errors.New("could not create transaction"))
 }
