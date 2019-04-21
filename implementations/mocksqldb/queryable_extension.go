@@ -17,7 +17,7 @@ var (
 )
 
 // GetSuccess is a helper that expects a Get to succeed
-func (mr *MockQueryableMockRecorder) GetSuccess(typ interface{}, runnable interface{}) *gomock.Call {
+func (mr *MockQueryableMockRecorder) GetSuccess(typ, runnable interface{}) *gomock.Call {
 	getCall := mr.Get(matcher.Interface(typ), StringType, StringType)
 	getCall.Return(nil)
 	if runnable != nil {
@@ -58,7 +58,7 @@ func (mr *MockQueryableMockRecorder) GetIDError(typ interface{}, uuid string, er
 }
 
 // GetNoParams is a helper that expects a Get with no params but the stmt
-func (mr *MockQueryableMockRecorder) GetNoParams(typ interface{}, runnable interface{}) *gomock.Call {
+func (mr *MockQueryableMockRecorder) GetNoParams(typ, runnable interface{}) *gomock.Call {
 	call := mr.Get(matcher.Interface(typ), StringType)
 	call.Return(nil)
 	if runnable != nil {
@@ -89,7 +89,7 @@ func (mr *MockQueryableMockRecorder) GetError(typ interface{}, err error) *gomoc
 }
 
 // SelectSuccess is an helper that expects a Select
-func (mr *MockQueryableMockRecorder) SelectSuccess(typ interface{}, runnable interface{}) *gomock.Call {
+func (mr *MockQueryableMockRecorder) SelectSuccess(typ, runnable interface{}) *gomock.Call {
 	selectCall := mr.Select(matcher.Interface(typ), StringType, IntType, IntType)
 	selectCall.Return(nil)
 	if runnable != nil {

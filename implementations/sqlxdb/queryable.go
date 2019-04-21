@@ -124,9 +124,9 @@ func (a byPos) Less(i, j int) bool { return a[i].pos < a[j].pos }
 
 // handleInClauses handles queries containing IN clauses.
 // ex: "IN (?)" or "IN ($1)"
-func (db *Queryable) handleInClauses(query string, args []interface{}) (string, []interface{}, error) {
+func (db *Queryable) handleInClauses(query string, args []interface{}) (finalQuery string, finalArgs []interface{}, err error) {
 	// Find all $x placeholders
-	re := regexp.MustCompile("\\$(\\d+)")
+	re := regexp.MustCompile(`\$(\d+)`)
 	matches := re.FindAllStringSubmatch(query, -1)
 	highestNumber := 0
 	for _, match := range matches {
@@ -138,7 +138,7 @@ func (db *Queryable) handleInClauses(query string, args []interface{}) (string, 
 	if highestNumber == 0 {
 		// Let's check if we have any `IN (?)`, in which case sqlx can handle
 		// everything by itself
-		re = regexp.MustCompile("IN ?\\( ?\\? ?\\)")
+		re = regexp.MustCompile(`IN ?\( ?\? ?\)`)
 		hasBindvar := len(re.FindStringSubmatch(query)) > 0
 		if hasBindvar {
 			query, args, err := sqlx.In(query, args...)
@@ -148,7 +148,7 @@ func (db *Queryable) handleInClauses(query string, args []interface{}) (string, 
 	}
 
 	// Find all IN clauses
-	re = regexp.MustCompile("IN ?\\( ?\\$(\\d+) ?\\)")
+	re = regexp.MustCompile(`IN ?\( ?\$(\d+) ?\)`)
 	globalMatches := re.FindAllStringSubmatch(query, -1)
 	if len(globalMatches) == 0 {
 		return query, args, nil
@@ -192,10 +192,9 @@ func (db *Queryable) handleInClauses(query string, args []interface{}) (string, 
 	// and we want to deal with $1 first, then $3
 	sort.Sort(byPos(infoList))
 
-	finalQuery := query
-	finalArgs := []interface{}{}
+	finalQuery = query
 	previousArgPos := -1
-	// bindShift contains the current number of shiffting made on the bindvars
+	// bindShift contains the current number of shifting made on the bindvars
 	// EX. if we have `x IN ($1) and y=$2` and we have a slice of 3
 	// bindShift will be increased by 2 so we can have
 	// x IN ($1, $2, $3) and y=$4
@@ -232,7 +231,7 @@ func (db *Queryable) handleInClauses(query string, args []interface{}) (string, 
 		for i := newHigh; i > newCurrent; i-- {
 			oldBindvar := fmt.Sprintf("$%d", i)
 			newBindvar := fmt.Sprintf("$%d", i+addedPadding)
-			finalQuery = strings.Replace(finalQuery, oldBindvar, newBindvar, -1)
+			finalQuery = strings.ReplaceAll(finalQuery, oldBindvar, newBindvar)
 		}
 
 		// insert all the new bindvar inside the IN clause
@@ -244,7 +243,7 @@ func (db *Queryable) handleInClauses(query string, args []interface{}) (string, 
 			bindvarToInsert = append(bindvarToInsert, bindvar)
 		}
 		bindvarInOriginalQuery := fmt.Sprintf("$%d", newCurrent)
-		finalQuery = strings.Replace(finalQuery, bindvarInOriginalQuery, strings.Join(bindvarToInsert, ", "), -1)
+		finalQuery = strings.ReplaceAll(finalQuery, bindvarInOriginalQuery, strings.Join(bindvarToInsert, ", "))
 
 		bindShift += addedPadding
 	}
