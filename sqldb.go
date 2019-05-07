@@ -6,7 +6,7 @@ import "database/sql"
 // Only the Queryable is generated. Connection and Tx both extend the generated
 // Queryable struct in order to be able to write helpers that works with the
 // 3 classes
-//go:generate mockgen -destination implementations/mocksqldb/queryable.go -package mocksqldb github.com/Nivl/go-sqldb Queryable
+//go:generate mockgen -destination mocksqldb/queryable.go -package mocksqldb github.com/Nivl/go-sqldb Queryable
 
 // Connection is an interface representing a database connection
 type Connection interface {
