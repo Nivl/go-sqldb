@@ -6,5 +6,5 @@
 
 ## Implementations
 
-- [sqlx](https://godoc.org/github.com/Nivl/go-sqldb/implementations/sqlxdb)
-- [GoMock](https://godoc.org/github.com/Nivl/go-sqldb/implementations/mocksqldb)
+- [sqlx](https://github.com/Nivl/sqldb-sqlx)
+- [GoMock](https://github.com/Nivl/sqldb-gomock)
